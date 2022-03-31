@@ -53,15 +53,11 @@ public class JogadorSuperPoderosas extends Jogador{
         int estadoJogo = jogadorVenceu(tabuleiro);
 
             if (estadoJogo == -1) {
-                System.out.println("Empatou");
                 return 0;
             } else if (estadoJogo == simbolo) {
-                System.out.println("Ganhei");
                 return 1;
             } else if (estadoJogo == 2) {
-                System.out.println("Ainda no jogo");
             } else {
-                System.out.println("Perdi");
                 return -1;               
             }
             if(maxLoop == 0){
