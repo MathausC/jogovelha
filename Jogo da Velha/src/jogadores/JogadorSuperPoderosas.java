@@ -2,9 +2,11 @@ package jogadores;
 import java.util.LinkedList;
 
 public class JogadorSuperPoderosas extends Jogador{
+    private int maxLoopHeuristica;
 
     public JogadorSuperPoderosas(String nome) {
         super(nome);
+        maxLoopHeuristica = 9;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class JogadorSuperPoderosas extends Jogador{
         for(Jogada jogada : jogadasPossiveis){
             tab = novoTabuleiro(tabuleiro, jogada, simbolo);
             int novoSimb = (simbolo == 1)? 0 : 1;
-            valorAtual = miniMax(tab, simbolo, novoSimb);
+            valorAtual = miniMax(tab, simbolo, novoSimb, maxLoopHeuristica);
             if(valorAtual > melhorValor){
                 melhorValor = valorAtual;
                 melhorJogada = jogada;
@@ -47,7 +49,7 @@ public class JogadorSuperPoderosas extends Jogador{
         novoTabuleiro[jogada.linha][jogada.coluna] = simbolo;
         return novoTabuleiro;
     }
-    private int miniMax(int[][] tabuleiro, int simbolo, int simboloDaVez){
+    private int miniMax(int[][] tabuleiro, int simbolo, int simboloDaVez, int maxLoop){
         int estadoJogo = jogadorVenceu(tabuleiro);
 
             if (estadoJogo == -1) {
@@ -62,6 +64,9 @@ public class JogadorSuperPoderosas extends Jogador{
                 System.out.println("Perdi");
                 return -1;               
             }
+            if(maxLoop == 0){
+                return heuristica(tabuleiro, simboloDaVez, simbolo);
+            }
         if(simboloDaVez == simbolo){
             LinkedList<Jogada> jogadasPossiveis = jogadasPossiveis(tabuleiro); 
             int melhorValor = -2;
@@ -71,7 +76,7 @@ public class JogadorSuperPoderosas extends Jogador{
             for(Jogada jogada : jogadasPossiveis){
                 tab = novoTabuleiro(tabuleiro, jogada, simbolo);
                 int novoSimb = (simbolo == 1)? 0 : 1;
-                valorAtual = miniMax(tab, simbolo, novoSimb);
+                valorAtual = miniMax(tab, simbolo, novoSimb, maxLoop-1);
                 if(valorAtual > melhorValor){
                     melhorValor = valorAtual;
                 }    
@@ -86,13 +91,46 @@ public class JogadorSuperPoderosas extends Jogador{
             for(Jogada jogada : jogadasPossiveis){
                 tab = novoTabuleiro(tabuleiro, jogada, simbolo);
                 int novoSimb = (simbolo == 1)? 0 : 1;
-                valorAtual = miniMax(tab, simbolo, novoSimb);
+                valorAtual = miniMax(tab, simbolo, novoSimb, maxLoop-1);
                 if(valorAtual < melhorValor){
                     melhorValor = valorAtual;
                 }    
             }
             return melhorValor;
 
+        }
+    }
+    private int heuristica(int[][] tabuleiro, int simboloDaVez, int simbolo){
+        int contLinha = 0;
+        int contColuna = 0;
+        for(int l = 0; l < tabuleiro.length; l++){
+            for(int c = 0; c < tabuleiro.length; c++){
+                if(tabuleiro[l][c] == simboloDaVez){
+                    contLinha++;
+                }else if(tabuleiro[l][c] == -1){
+
+                }else{
+                    contLinha--;
+                }
+            }
+        }
+        for(int c = 0; c < tabuleiro.length; c++){
+            for(int l = 0; l < tabuleiro.length; l++){
+                if(tabuleiro[l][c] == simboloDaVez){
+                    contColuna++;
+                }else if(tabuleiro[l][c] == -1){
+
+                }else{
+                    contColuna--;
+                }
+            }
+        }
+        if((contLinha+contColuna) > 0){
+            return (simbolo == simboloDaVez)? 1 : -1;
+        }else if((contLinha+contColuna) < 0){
+            return (simbolo == simboloDaVez)? -1 : 1;
+        }else{
+            return 0;
         }
     }
 
