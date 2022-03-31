@@ -5,6 +5,7 @@
  */
 package jogo;
 
+import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
